@@ -1,3 +1,65 @@
+#*Day4: Key Takeaways and Concepts below Program Code*
+
+from langchain_core.tools import tool
+from langchain_core.messages import HumanMessage
+from langchain_groq import ChatGroq
+from langgraph.prebuilt import create_react_agent
+from dotenv import load_dotenv
+
+load_dotenv() # Load environment variables from .env file
+
+# Here Am using generic name to function with No association with DocString and Operation it performs. See Result and how DOCstring helps LLM.
+#The LLM ignored the actual tool result (-5) because the docstring promised multiplication. It used the expected result (50), not the actual result.
+# The LLM never used -5! from Calca function It "imagined" the answer was 50 based on the docstring promise.
+
+# @tool 
+# def Calca(a:int ,b:int)->int:
+#     """Multiplies two numbers and returns the result.""" #Why do we need docstring here?
+#     return a-b
+
+# @tool 
+# def Calc(a:int,b:int)->int:
+#     """Adds two numbers and returns the result."""
+#     return a+b
+@tool
+def Multiply(a:int ,b:int)->int:
+    """Multiplies two numbers and returns the result.""" #Why do we need docstring here?
+    return a*b
+
+@tool 
+def Add(a:int,b:int)->int:
+    """Adds two numbers and returns the result."""
+    return a+b
+llm = ChatGroq(model="llama-3.3-70b-versatile") #Add GROQ_API_KEY under.env file while program execution.
+agent=create_react_agent(llm,tools=[Multiply,Add ]) #what is create_react_agent?
+
+result=agent.invoke({"messages":[HumanMessage(content="Calculate 5 multiplied by 10 and then add 20 to the result") ]}) #What is message Format here ?
+
+# print(result)
+print(result["messages"][-1].content)
+
+#Each Steps of Agents Execution
+for msg in result["messages"]:
+    msg.pretty_print()
+               
+# You ask a question
+#       ↓
+#    LLM thinks
+#       ↓
+#    calls tool       ← multiply(47, 83)
+#       ↓
+#    reads result     ← 3901
+#       ↓
+#    calls tool       ← add(3901, 22)
+#       ↓
+#    reads result     ← 3923
+#       ↓
+#    LLM decides: done, no more tools needed
+#       ↓
+#    returns answer   ← "The answer is 3923"
+
+#****** Day 4 Concepts and Key TakeWays*************
+
 #Why do we need docstring here?
 # 1.A docstring (documentation string) is a special text written inside triple quotes """...""" placed right after a function, class, or module definition. It describes what the code does.
 # 2.Docstrings serve three main audiences, each with their own purpose:
@@ -47,66 +109,12 @@
 #                   ]
 #                }) # Now agent will respond like a teacher with step-by-step explanation
 
+# The LLM never actually runs your Python function. It only outputs a JSON tool call. LangGraph's ToolNode reads that JSON and runs the function.
 
-from ast import For
-
-from langchain_core import tools
-from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
-from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage
-from langchain_groq import ChatGroq
-
-
-load_dotenv() # Load environment variables from .env file
-
-# Here Am using generic name to function with No association with DocString and Operation it performs. See Result and how DOCstring helps LLM.
-#The LLM ignored the actual tool result (-5) because the docstring promised multiplication. It used the expected result (50), not the actual result.
-# The LLM never used -5! from Calca function It "imagined" the answer was 50 based on the docstring promise.
-
-# @tool 
-# def Calca(a:int ,b:int)->int:
-#     """Multiplies two numbers and returns the result.""" #Why do we need docstring here?
-#     return a-b
-
-# @tool 
-# def Calc(a:int,b:int)->int:
-#     """Adds two numbers and returns the result."""
-#     return a+b
-@tool
-def Multiply(a:int ,b:int)->int:
-    """Multiplies two numbers and returns the result.""" #Why do we need docstring here?
-    return a*b
-
-@tool 
-def Add(a:int,b:int)->int:
-    """Adds two numbers and returns the result."""
-    return a+b
-llm = ChatGroq(model="llama-3.3-70b-versatile") #Add GROQ_API_KEY under.env file while program execution.
-agent=create_react_agent(llm,tools=[Multiply,Add ]) #what is create_react_agent?
-
-result=agent.invoke({"messages":[HumanMessage(content="Calculate 5 multiplied by 10 and then add 20 to the result") ]}) #What is message Format here ?
-
-# print(result)
-
-print(result["messages"][-1].content)
-
-#Each Steps of Agents Execution
-for msg in result["messages"]:
-    msg.pretty_print()
-               
-# You ask a question
-#       ↓
-#    LLM thinks
-#       ↓
-#    calls tool       ← multiply(47, 83)
-#       ↓
-#    reads result     ← 3901
-#       ↓
-#    calls tool       ← add(3901, 22)
-#       ↓
-#    reads result     ← 3923
-#       ↓
-#    LLM decides: done, no more tools needed
-#       ↓
-#    returns answer   ← "The answer is 3923"
+#Libraries and Its Usage
+# 1.langchain_core.tools.tool-: This is a decorator that turns a regular Python function into a tool 
+# 2.ChatGroq-: This is a class from langchain_groq that allows you to interact with GROQ's language models. It provides methods to send messages and receive responses from the model.
+# 3.create_react_agent-: This is a function from langgraph.prebuilt that creates an agent following the REACT pattern. It takes an LLM and a list of tools as input and returns an agent that can reason, act, observe, and repeat until it completes a task.
+# 4.HumanMessage-: This is a class from langchain_core.messages that represents a message from a human user. It is used to structure the input messages when invoking the agent.
+# 5.load_dotenv-: This function from the dotenv library loads environment variables from a .env file into the program's environment. This is useful for keeping sensitive information like API keys out of your codebase.
+#***********************************************************Ends Here************************************************
