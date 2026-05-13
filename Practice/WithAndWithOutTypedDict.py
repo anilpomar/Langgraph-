@@ -12,5 +12,5 @@ def Node1(state:WithStateReducer):
 class WithOutState():
     msg:str
 
-def Node3(state:WithOutState):
-    return {"msg":"Hello"}
+def Node3(statee):
+    return {"msg":10}

@@ -6,22 +6,12 @@ class State (TypedDict):
     score:int
     result:str
 
-# Node 1 — entry point (just prepares data)
-def preprocess(state):
-    print("Step 1: preprocess ran")
-    return {"score": state["score"] * 2}  # doubles the score
+def evaluate(state): return {"score": state["score"]}
 
-# Node 2 — conditional edge is attached here
-def evaluate(state):
-    print("Step 2: evaluate ran")
-    return {"score": state["score"]}
-
-#Destination nodes 
 def approve(state): return {"result":"APPROVED"}
 def review(state): return {"result":"NEEDS REVIEW"}
 def reject(state): return {"result":"REJECTED"}
 
-# Router — attached to evaluate, NOT preprocess
 def router(state):
        if state["score"] >= 80:
           return "approve1"
@@ -37,9 +27,8 @@ graph.add_node("approve_node", approve)
 graph.add_node("review_node", review)
 graph.add_node("reject_node",reject)
 
-graph.set_entry_point("evaluate") # graph STARTS at preprocess
-graph.add_edge("preprocess", "evaluate") # preprocess goes to evaluate
-graph.add_conditional_edges("evaluate",   # routing happens AFTER evaluate
+graph.set_entry_point("evaluate")     # graph STARTS at preprocess
+graph.add_conditional_edges("evaluate",    # routing happens AFTER evaluate
         router,
     {
        "approve1":"approve_node",

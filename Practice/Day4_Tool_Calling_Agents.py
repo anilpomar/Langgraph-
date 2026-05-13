@@ -82,7 +82,7 @@ def Multiply(a:int ,b:int)->int:
 def Add(a:int,b:int)->int:
     """Adds two numbers and returns the result."""
     return a+b
-llm = ChatGroq(model="llama-3.3-70b-versatile")
+llm = ChatGroq(model="llama-3.3-70b-versatile") #Add GROQ_API_KEY under.env file while program execution.
 agent=create_react_agent(llm,tools=[Multiply,Add ]) #what is create_react_agent?
 
 result=agent.invoke({"messages":[HumanMessage(content="Calculate 5 multiplied by 10 and then add 20 to the result") ]}) #What is message Format here ?
