@@ -1,0 +1,241 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:1rem 0}
+.hint{font-size:11px;color:var(--color-text-tertiary);margin-bottom:1.2rem}
+.qcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:12px;overflow:hidden}
+.qhead{padding:1rem 1.25rem;cursor:default}
+.qmeta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.qnum{font-size:11px;font-weight:500;padding:2px 10px;border-radius:20px}
+.qtag{font-size:11px;color:var(--color-text-secondary);padding:2px 8px;background:var(--color-background-secondary);border-radius:20px;border:0.5px solid var(--color-border-tertiary)}
+.qdiff{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px}
+.qtext{font-size:14px;font-weight:500;color:var(--color-text-primary);line-height:1.5;margin-bottom:12px}
+.qhint{font-size:12px;color:var(--color-text-secondary);font-style:italic}
+.reveal-btn{display:inline-block;font-size:12px;padding:6px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);cursor:pointer;margin-top:10px}
+.reveal-btn:hover{background:var(--color-background-secondary)}
+.answer{display:none;padding:1rem 1.25rem;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.answer.open{display:block}
+.alabel{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.atext{font-size:13px;color:var(--color-text-primary);line-height:1.7}
+.atext code{font-family:var(--font-mono);font-size:11.5px;background:var(--color-background-primary);padding:1px 5px;border-radius:4px;border:0.5px solid var(--color-border-tertiary)}
+.acode{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;font-family:var(--font-mono);font-size:11.5px;line-height:1.7;margin-top:10px;color:var(--color-text-primary);white-space:pre}
+.score-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.sc{font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary)}
+.sc:hover{background:var(--color-background-secondary)}
+.progress{display:flex;gap:6px;margin-bottom:1.2rem;align-items:center}
+.pbar{flex:1;height:4px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
+.pfill{height:100%;background:#534AB7;border-radius:2px;transition:width .3s}
+.ptext{font-size:11px;color:var(--color-text-secondary);white-space:nowrap}
+.kw{color:#185FA5}
+.fn{color:#534AB7}
+.st{color:#3B6D11}
+.cm{color:#888780;font-style:italic}
+</style>
+
+<div class="wrap">
+<h2 style="position:absolute;left:-9999px">LangGraph mock interview questions covering Day 1 to Day 3 concepts</h2>
+<p class="hint">Read each question, think of your answer, then click "Reveal answer" to check yourself</p>
+
+<div class="progress">
+  <div class="pbar"><div class="pfill" id="pfill" style="width:0%"></div></div>
+  <div class="ptext" id="ptext">0 of 5 revealed</div>
+</div>
+
+<div class="qcard">
+  <div class="qhead">
+    <div class="qmeta">
+      <span class="qnum" style="background:#E6F1FB;color:#0C447C">Q1</span>
+      <span class="qtag">Day 1 — fundamentals</span>
+      <span class="qdiff" style="background:#EAF3DE;color:#27500A">easy</span>
+    </div>
+    <div class="qtext">"Can you explain what a node and an edge are in LangGraph, and how they work together?"</div>
+    <div class="qhint">Hint: think about what each one does and how data moves between them</div>
+    <button class="reveal-btn" onclick="reveal(this)">Reveal answer</button>
+  </div>
+  <div class="answer">
+    <div class="alabel">Strong answer</div>
+    <div class="atext">
+      A <code>node</code> is a plain Python function that receives the current state dictionary, does some work, and returns a partial update to the state. It is the unit of work in a LangGraph application.<br><br>
+      An <code>edge</code> is a connection between two nodes that tells LangGraph which node to run next. A fixed edge always goes to the same destination. A conditional edge uses a router function to pick the destination dynamically based on the current state.<br><br>
+      Together they form a directed graph — nodes do the work, edges control the flow. Every LangGraph app is just nodes connected by edges sharing a common state dictionary.
+    </div>
+    <div class="acode"><span class="cm"># Node — does the work</span>
+<span class="kw">def</span> <span class="fn">greet</span>(state):
+    <span class="kw">return</span> {<span class="st">"message"</span>: <span class="st">"Hello!"</span>}
+
+<span class="cm"># Edge — controls the flow</span>
+graph.<span class="fn">add_edge</span>(<span class="st">"greet"</span>, <span class="st">"shout"</span>)   <span class="cm"># fixed</span>
+graph.<span class="fn">add_conditional_edges</span>(<span class="st">"greet"</span>, router, {...})  <span class="cm"># dynamic</span></div>
+    <div class="score-row">
+      <span class="sc" style="background:#EAF3DE;color:#27500A">Got it</span>
+      <span class="sc" style="background:#FAEEDA;color:#633806">Partially</span>
+      <span class="sc" style="background:#FAECE7;color:#712B13">Missed it</span>
+    </div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qhead">
+    <div class="qmeta">
+      <span class="qnum" style="background:#E1F5EE;color:#085041">Q2</span>
+      <span class="qtag">Day 1 — compile and invoke</span>
+      <span class="qdiff" style="background:#EAF3DE;color:#27500A">easy</span>
+    </div>
+    <div class="qtext">"What is the difference between `graph.compile()` and `app.invoke()`? Can you explain what each one does?"</div>
+    <div class="qhint">Hint: one prepares the graph, the other runs it</div>
+    <button class="reveal-btn" onclick="reveal(this)">Reveal answer</button>
+  </div>
+  <div class="answer">
+    <div class="alabel">Strong answer</div>
+    <div class="atext">
+      <code>graph.compile()</code> validates the graph definition — it checks that all nodes have edges, an entry point is set, and no connections are broken. It returns a compiled <code>app</code> object that is ready to run. Nothing executes at this stage.<br><br>
+      <code>app.invoke()</code> actually runs the graph. You pass in the initial state dictionary and it executes every node in order, passing state between them, and returns the final state when it reaches <code>END</code>.<br><br>
+      A good analogy: <code>compile()</code> is like building and checking a car before a race. <code>invoke()</code> is actually driving it.
+    </div>
+    <div class="acode">app = graph.<span class="fn">compile</span>()          <span class="cm"># validates — nothing runs yet</span>
+result = app.<span class="fn">invoke</span>({<span class="st">"message"</span>: <span class="st">"world"</span>})  <span class="cm"># runs the graph</span>
+<span class="fn">print</span>(result)  <span class="cm"># {'message': 'HELLO, WORLD!'}</span></div>
+    <div class="score-row">
+      <span class="sc" style="background:#EAF3DE;color:#27500A">Got it</span>
+      <span class="sc" style="background:#FAEEDA;color:#633806">Partially</span>
+      <span class="sc" style="background:#FAECE7;color:#712B13">Missed it</span>
+    </div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qhead">
+    <div class="qmeta">
+      <span class="qnum" style="background:#EEEDFE;color:#3C3489">Q3</span>
+      <span class="qtag">Day 2 — state and reducers</span>
+      <span class="qdiff" style="background:#FAEEDA;color:#633806">medium</span>
+    </div>
+    <div class="qtext">"What is a reducer in LangGraph? Why would you use `Annotated[list, operator.add]` instead of just `list` for a history field?"</div>
+    <div class="qhint">Hint: think about what happens when two nodes both write to the same field</div>
+    <button class="reveal-btn" onclick="reveal(this)">Reveal answer</button>
+  </div>
+  <div class="answer">
+    <div class="alabel">Strong answer</div>
+    <div class="atext">
+      By default LangGraph replaces a state field with whatever a node returns. So if node1 writes <code>["step1"]</code> and node2 writes <code>["step2"]</code>, the final value is <code>["step2"]</code> — node1's data is lost.<br><br>
+      A reducer changes this behaviour. Instead of replacing, LangGraph calls the reducer function to merge the old and new values. <code>operator.add</code> on lists does concatenation — so <code>["step1"] + ["step2"]</code> gives <code>["step1", "step2"]</code>. Nothing is lost.<br><br>
+      You use <code>Annotated[list, operator.add]</code> whenever you want to accumulate values across nodes — chat history, logs, audit trails, or any growing list.
+    </div>
+    <div class="acode"><span class="cm"># Without reducer — node2 overwrites node1</span>
+history: list
+<span class="cm"># node1 returns ["a"], node2 returns ["b"]</span>
+<span class="cm"># final: ["b"]  ← "a" is gone</span>
+
+<span class="cm"># With reducer — both values kept</span>
+history: Annotated[list, operator.add]
+<span class="cm"># node1 returns ["a"], node2 returns ["b"]</span>
+<span class="cm"># final: ["a", "b"]  ← both preserved</span></div>
+    <div class="score-row">
+      <span class="sc" style="background:#EAF3DE;color:#27500A">Got it</span>
+      <span class="sc" style="background:#FAEEDA;color:#633806">Partially</span>
+      <span class="sc" style="background:#FAECE7;color:#712B13">Missed it</span>
+    </div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qhead">
+    <div class="qmeta">
+      <span class="qnum" style="background:#FBEAF0;color:#72243E">Q4</span>
+      <span class="qtag">Day 3 — conditional edges</span>
+      <span class="qdiff" style="background:#FAEEDA;color:#633806">medium</span>
+    </div>
+    <div class="qtext">"What is the difference between `add_edge` and `add_conditional_edges`? When would you choose one over the other?"</div>
+    <div class="qhint">Hint: think about fixed vs dynamic destinations</div>
+    <button class="reveal-btn" onclick="reveal(this)">Reveal answer</button>
+  </div>
+  <div class="answer">
+    <div class="alabel">Strong answer</div>
+    <div class="atext">
+      <code>add_edge</code> creates a fixed connection — after node A, always go to node B. You use it when the next step never changes regardless of what the data looks like.<br><br>
+      <code>add_conditional_edges</code> creates a dynamic connection — after node A, call a router function with the current state, and the router's return value decides which node runs next. You use it when the next step depends on the data — like routing to approve, review, or reject based on a score.<br><br>
+      In real applications, most graphs use both: fixed edges for predictable steps and conditional edges where business logic needs to branch.
+    </div>
+    <div class="acode"><span class="cm"># Fixed — always goes to shout after greet</span>
+graph.<span class="fn">add_edge</span>(<span class="st">"greet"</span>, <span class="st">"shout"</span>)
+
+<span class="cm"># Dynamic — router decides based on state</span>
+graph.<span class="fn">add_conditional_edges</span>(
+    <span class="st">"evaluate"</span>,
+    router,                        <span class="cm"># called with current state</span>
+    {<span class="st">"approve"</span>: <span class="st">"approve_node"</span>,
+     <span class="st">"reject"</span>:  <span class="st">"reject_node"</span>}
+)</div>
+    <div class="score-row">
+      <span class="sc" style="background:#EAF3DE;color:#27500A">Got it</span>
+      <span class="sc" style="background:#FAEEDA;color:#633806">Partially</span>
+      <span class="sc" style="background:#FAECE7;color:#712B13">Missed it</span>
+    </div>
+  </div>
+</div>
+
+<div class="qcard">
+  <div class="qhead">
+    <div class="qmeta">
+      <span class="qnum" style="background:#FAEEDA;color:#633806">Q5</span>
+      <span class="qtag">Day 1–3 — scenario based</span>
+      <span class="qdiff" style="background:#FAECE7;color:#712B13">hard</span>
+    </div>
+    <div class="qtext">"You are building a loan approval system. Applications with a credit score above 750 get auto-approved, between 600–750 go to manual review, and below 600 get rejected. How would you design this in LangGraph?"</div>
+    <div class="qhint">Hint: think about what goes in state, which nodes you need, and how the router works</div>
+    <button class="reveal-btn" onclick="reveal(this)">Reveal answer</button>
+  </div>
+  <div class="answer">
+    <div class="alabel">Strong answer</div>
+    <div class="atext">
+      I would design it with three layers. First the state — it needs a <code>credit_score</code> integer field and a <code>decision</code> string field to record the outcome. I would also add a <code>history</code> field with <code>Annotated[list, operator.add]</code> to track every step for auditing.<br><br>
+      Second, the nodes — an <code>intake</code> node that validates the application, then three destination nodes: <code>auto_approve</code>, <code>manual_review</code>, and <code>auto_reject</code>. Each writes its decision to state.<br><br>
+      Third, the router — after <code>intake</code>, a router function reads <code>credit_score</code> and returns <code>"approve"</code>, <code>"review"</code>, or <code>"reject"</code>. The mapping dict connects those strings to the destination nodes via <code>add_conditional_edges</code>.
+    </div>
+    <div class="acode"><span class="kw">class</span> <span class="fn">LoanState</span>(TypedDict):
+    credit_score: <span class="tp">int</span>
+    decision:     <span class="tp">str</span>
+    history:      Annotated[list, operator.add]
+
+<span class="kw">def</span> <span class="fn">router</span>(state):
+    s = state[<span class="st">"credit_score"</span>]
+    <span class="kw">if</span>   s > 750:  <span class="kw">return</span> <span class="st">"approve"</span>
+    <span class="kw">elif</span> s >= 600: <span class="kw">return</span> <span class="st">"review"</span>
+    <span class="kw">else</span>:          <span class="kw">return</span> <span class="st">"reject"</span>
+
+g.<span class="fn">add_conditional_edges</span>(
+    <span class="st">"intake"</span>, router,
+    {<span class="st">"approve"</span>: <span class="st">"auto_approve"</span>,
+     <span class="st">"review"</span>:  <span class="st">"manual_review"</span>,
+     <span class="st">"reject"</span>:  <span class="st">"auto_reject"</span>}
+)</div>
+    <div class="score-row">
+      <span class="sc" style="background:#EAF3DE;color:#27500A">Got it</span>
+      <span class="sc" style="background:#FAEEDA;color:#633806">Partially</span>
+      <span class="sc" style="background:#FAECE7;color:#712B13">Missed it</span>
+    </div>
+  </div>
+</div>
+
+<button style="margin-top:1rem;width:100%" onclick="sendPrompt('Give me 5 more harder mock interview questions on LangGraph covering Day 1 to Day 3')">Give me 5 harder questions ↗</button>
+</div>
+
+<script>
+let revealed=0;
+function reveal(btn){
+  const answer=btn.closest('.qhead').nextElementSibling;
+  if(!answer.classList.contains('open')){
+    answer.classList.add('open');
+    btn.textContent='Hide answer';
+    revealed++;
+    document.getElementById('pfill').style.width=(revealed/5*100)+'%';
+    document.getElementById('ptext').textContent=revealed+' of 5 revealed';
+  } else {
+    answer.classList.remove('open');
+    btn.textContent='Reveal answer';
+    revealed--;
+    document.getElementById('pfill').style.width=(revealed/5*100)+'%';
+    document.getElementById('ptext').textContent=revealed+' of 5 revealed';
+  }
+}
+</script>
